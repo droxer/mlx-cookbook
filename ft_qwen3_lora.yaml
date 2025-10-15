@@ -1,4 +1,4 @@
-model: "models/Qwen3-0.6B" 
+model: "qwen/Qwen3-0.6B" 
 train: true 
 fine_tune_type: lora
 optimizer: adamw 

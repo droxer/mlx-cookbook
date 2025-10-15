@@ -6,6 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "datasets>=4.2.0",
+    "huggingface-hub[cli]>=0.35.3",
     "mlx-lm>=0.28.2",
-    "modelscope>=1.31.0",
 ]

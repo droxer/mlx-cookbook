@@ -16,14 +16,14 @@ Usage
 1. Transform dataset to mlx format
 
 ```bash
-uv run modelscope download --dataset swift/self-cognition --local_dir ./datasets/self-cognition
+uv run hf download --repo-type dataset modelscope/self-cognition --local-dir ./datasets/self-cognition
 uv run python transform.py 
 ```
 
 2. Download Qwen3-0.6B
 
 ```bash
-uv run modelscope download --model Qwen/Qwen3-0.6B --local_dir ./models/Qwen3-0.6B
+uv run hf download --repo-type model Qwen/Qwen3-0.6B
 ```
 
 3. Fine-tune Qwen3-0.6B with self-cognition dataset
@@ -35,20 +35,31 @@ uv run mlx_lm.lora --config ft_qwen3_lora.yaml
 4. Test with adapters
 
 ```bash
-uv run mlx_lm.generate --model ./models/Qwen3-0.6B --adapter-path cog_adapters
+uv run mlx_lm.generate --model qwen/Qwen3-0.6B --adapter-path cog_adapters --prompt "Say this is a test"
 ```
 
-4. Test with chat template
+5. fuse adapters
 ```bash
-uv run mlx_lm.chat --model ./models/Qwen3-0.6B --adapter-path cog_adapters
+uv run mlx_lm.fuse --model qwen/Qwen3-0.6B --adapter-path ./cog_adapters --save-path ./models/fine-tuned_Qwen3-0.6B
 ```
 
-5. Start a local server
+6. Test fine-tuned model with adapters
+
 ```bash
-uv run mlx_lm.server --model ./models/Qwen3-0.6B --adapter-path cog_adapters --chat-template-args '{"enable_thinking":false}'
+uv run mlx_lm.generate --model ./models/fine-tuned_Qwen3-0.6B --prompt "Say this is a test"
 ```
 
-6. Test local server with curl
+4. Test fine-tuned model with chat template
+```bash
+uv run mlx_lm.chat --model ./models/fine-tuned_Qwen3-0.6B
+```
+
+5. Start a local server with fine-tuned model
+```bash
+uv run mlx_lm.server --model ./models/fine-tuned_Qwen3-0.6B --chat-template-args '{"enable_thinking":false}'
+```
+
+6. Test local server with curl with fine-tuned model
 ```bash
 curl localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \

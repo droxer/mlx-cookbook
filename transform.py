@@ -5,7 +5,7 @@ import argparse
 def main(name="AIR", author="AIR Team"):
     mlx_data = []
 
-    with open("./datasets/self-cognition/self_cognition.jsonl", "r") as fread:
+    with open("./datasets/self-cognition/self-cognition.jsonl", "r") as fread:
         data_list = fread.readlines()
 
         for data in data_list:
