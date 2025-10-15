@@ -1,0 +1,11 @@
+[project]
+name = "mlx-cookbook"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.2.0",
+    "mlx-lm>=0.28.2",
+    "modelscope>=1.31.0",
+]

@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# MLX
+cog_adapters
+mlx_data
+models/*
+cog_adapters
+datasets/*
