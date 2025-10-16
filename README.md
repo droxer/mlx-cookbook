@@ -1,70 +1,78 @@
-MLX Cookbook
-============
+# MLX LoRA Fine-Tuning Cookbook
 
-Cookbook for MLX Lora with Qwen3-0.6B.
+Fine-tune Qwen3-0.6B with MLX LoRA for self-cognition.
 
-Installation
-------------
+## Quick Start
 
 ```bash
+# Install dependencies
 uv sync
+
+# Complete workflow
+make setup && make finetune && make chat
 ```
 
-Usage
------
+## Commands
 
-1. Transform dataset to mlx format
+| Command | What it does |
+|---------|-------------|
+| `make help` | Show all commands |
+| `make setup` | Download dataset + model |
+| `make finetune` | Fine-tune with LoRA |
+| `make chat` | Interactive chat |
+| `make server` | Start API server |
+| `make status` | Check progress |
+| `make clean` | Clean up files |
+
+## Customization
 
 ```bash
+make finetune MODEL_NAME="MyBot" MODEL_AUTHOR="Your Name"
+```
+
+## Manual Commands
+
+If you prefer not to use the Makefile:
+
+```bash
+# Setup
 uv run hf download --repo-type dataset modelscope/self-cognition --local-dir ./datasets/self-cognition
-uv run python transform.py 
-```
-
-2. Download Qwen3-0.6B
-
-```bash
+uv run python transform.py --name "AIR" --author "TronClass AIR"
 uv run hf download --repo-type model Qwen/Qwen3-0.6B
-```
 
-3. Fine-tune Qwen3-0.6B with self-cognition dataset
-
-```bash
+# Fine-tune
 uv run mlx_lm.lora --config ft_qwen3_lora.yaml
-```
 
-4. Test with adapters
-
-```bash
-uv run mlx_lm.generate --model qwen/Qwen3-0.6B --adapter-path cog_adapters --prompt "Say this is a test"
-```
-
-5. fuse adapters
-```bash
-uv run mlx_lm.fuse --model qwen/Qwen3-0.6B --adapter-path ./cog_adapters --save-path ./models/fine-tuned_Qwen3-0.6B
-```
-
-6. Test fine-tuned model with adapters
-
-```bash
-uv run mlx_lm.generate --model ./models/fine-tuned_Qwen3-0.6B --prompt "Say this is a test"
-```
-
-4. Test fine-tuned model with chat template
-```bash
+# Test
+uv run mlx_lm.generate --model ./models/fine-tuned_Qwen3-0.6B --prompt "What is your name?"
 uv run mlx_lm.chat --model ./models/fine-tuned_Qwen3-0.6B
 ```
 
-5. Start a local server with fine-tuned model
-```bash
-uv run mlx_lm.server --model ./models/fine-tuned_Qwen3-0.6B --chat-template-args '{"enable_thinking":false}'
+## Files
+
+```
+├── Makefile                 # 6 essential commands
+├── ft_qwen3_lora.yaml      # Fine-tuning config
+├── transform.py            # Dataset prep
+├── datasets/               # Raw dataset
+├── mlx_data/               # MLX format data
+├── cog_adapters/           # LoRA adapters
+└── models/                 # Fine-tuned model
 ```
 
-6. Test local server with curl with fine-tuned model
+## Config
+
+- **Model**: Qwen3-0.6B
+- **Iterations**: 500
+- **Learning rate**: 1e-4
+- **LoRA rank**: 8
+
+## Troubleshooting
+
 ```bash
-curl localhost:8080/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-     "messages": [{"role": "user", "content": "Say this is a test!"}],
-     "temperature": 0.7
-   }'
+make status  # Check what's done
+make clean   # Remove generated files
+make setup   # Start fresh
 ```
+
+The fine-tuned model will respond with your custom name and author! 🚀
