@@ -12,10 +12,6 @@ CYAN := \033[0;36m
 RED := \033[0;31m
 RESET := \033[0m
 
-# HuggingFace offline mode - prioritize local cache
-export HF_DATASETS_OFFLINE := 1
-export TRANSFORMERS_OFFLINE := 1
-
 help: ## Show available commands
 	@echo "$(CYAN)MLX LoRA Fine-Tuning Cookbook$(RESET)"
 	@echo "$(YELLOW)Commands: setup, finetune, fuse, chat, chat-ft, server, clean, status$(RESET)"
@@ -24,7 +20,7 @@ setup: ## Download dataset, model, and transform data
 	@echo "$(BLUE)Setting up MLX environment...$(RESET)"
 	@mkdir -p datasets/self-cognition mlx_data models
 	uv run hf download --repo-type dataset modelscope/self-cognition --local-dir ./datasets/self-cognition
-	uv run python scripts/transform.py --name "$(MODEL_NAME)" --author "$(MODEL_AUTHOR)"
+	uv run python script/transform.py --name "$(MODEL_NAME)" --author "$(MODEL_AUTHOR)"
 	uv run hf download --repo-type model Qwen/Qwen3-0.6B
 	@echo "$(GREEN)Setup complete!$(RESET)"
 
