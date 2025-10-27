@@ -1,26 +1,52 @@
-model: "qwen/Qwen3-0.6B" 
-train: true 
-fine_tune_type: lora
-optimizer: adamw 
-data: "mlx_data" 
-seed: 0 
-num_layers: 28 
-batch_size: 1 
-iters: 500  
-val_batches: 25 
-learning_rate: 1e-4 
-project_name: MLX-FT-Qwen3  
-steps_per_report: 10  
-steps_per_eval: 200 
-resume_adapter_file: null 
-adapter_path: "cog_adapters"  
-save_every: 100 
-test: false 
-test_batches: 100 
-max_seq_length: 512 
-grad_checkpoint: false 
-lora_parameters:  
-  keys: ["self_attn.q_proj", "self_attn.v_proj"]
-  rank: 8
-  scale: 20.0
-  dropout: 0.0
+# Model configuration
+model: "qwen/Qwen3-0.6B"              # Pre-trained model to fine-tune
+train: true                           # Enable training mode
+fine_tune_type: lora                  # Use LoRA (Low-Rank Adaptation) fine-tuning
+optimizer: adamw                      # AdamW optimizer for training
+
+# Data configuration
+data: "mlx_data"                      # Directory containing training data
+seed: 0                              # Random seed for reproducibility
+
+# Model architecture
+num_layers: 28                       # Number of transformer layers in the model
+
+# Training hyperparameters
+batch_size: 1                        # Number of samples per training batch (increased for stability)
+iters: 1000                          # Total training iterations (increased for better convergence)
+val_batches: 100                     # Number of batches to use for validation
+learning_rate: 1e-5                  # Learning rate (reduced for stable training)
+max_seq_length: 512                  # Maximum sequence length for training samples
+
+# Logging and monitoring
+project_name: MLX-FT-Qwen3           # Project name for logging
+steps_per_report: 10                 # Report training progress every N steps
+steps_per_eval: 200                  # Evaluate model performance every N steps
+
+# Checkpointing and resuming
+resume_adapter_file: null            # File to resume training from (null = start fresh)
+adapter_path: "cog_adapters"         # Directory to save trained adapters
+save_every: 100                      # Save model checkpoint every N iterations
+
+# Testing configuration
+test: false                          # Run testing after training
+test_batches: 100                    # Number of batches to use for testing
+
+# Memory optimization
+grad_checkpoint: false               # Enable gradient checkpointing to save memory
+
+# LoRA-specific parameters
+lora_parameters:
+  # Layers to apply LoRA adapters to (expanded coverage for better adaptation)
+  keys: [
+    "self_attn.q_proj",              # Query projection in attention mechanism
+    "self_attn.v_proj",              # Value projection in attention mechanism
+    "self_attn.k_proj",              # Key projection in attention mechanism
+    "self_attn.o_proj",              # Output projection in attention mechanism
+    "mlp.gate_proj",                 # Gate projection in MLP layers
+    "mlp.up_proj",                   # Up projection in MLP layers
+    "mlp.down_proj"                  # Down projection in MLP layers
+  ]
+  rank: 2                            # LoRA rank (reduced for stability, controls adapter capacity)
+  scale: 20.0                        # Scaling factor for LoRA adapters
+  dropout: 0.2                       # Dropout rate for regularization (added to prevent overfitting)
